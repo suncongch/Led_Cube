@@ -1,0 +1,41 @@
+C51 COMPILER V8.08   DELAY                                                                 05/13/2018 16:40:33 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN delay.OBJ
+COMPILER INVOKED BY: F:\applecation E\kell\C51\BIN\C51.EXE delay.c COMPACT OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "config.h"
+   2          
+   3          void delay5us(void)   //误差 -0.026765046296us STC 1T 22.1184Mhz
+   4          {
+   5   1          unsigned char a,b;
+   6   1          for(b=7;b>0;b--)
+   7   1              for(a=2;a>0;a--);
+   8   1      }
+   9          
+  10          void delay(uint i)
+  11          
+  12          {                                                                                                     
+  13   1      
+  14   1               while (i--){
+  15   2                       delay5us();}//12t的mcu 注释这个延时即可
+  16   1      }
+  17          
+  18          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     29    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

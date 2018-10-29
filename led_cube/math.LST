@@ -1,0 +1,933 @@
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MATH
+OBJECT MODULE PLACED IN math.OBJ
+COMPILER INVOKED BY: F:\applecation E\kell\C51\BIN\C51.EXE math.c COMPACT OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "REG52.H"
+   2          #include "intrins.h"
+   3          #include "config.h"
+   4          #include "delay.h"
+   5          #include "flash.h"
+   6          #include "config.h"
+   7          
+   8          
+   9          /*To judge the num bit*/
+  10          
+  11          uchar judgebit(uchar num,uchar b)
+  12          
+  13          {
+  14   1      
+  15   1               char n;
+  16   1      
+  17   1               num=num&(1<<b);
+  18   1      
+  19   1               if (num)
+  20   1      
+  21   1               n=1;
+  22   1      
+  23   1               else
+  24   1      
+  25   1               n=0;
+  26   1      
+  27   1               return n;
+  28   1      
+  29   1      }
+  30          
+  31          /*To figure out the round number*/
+  32          
+  33          uchar abs(uchar a)
+  34          
+  35          {
+  36   1      
+  37   1               uchar b;
+  38   1      
+  39   1               b=a/10;
+  40   1      
+  41   1               a=a-b*10;
+  42   1      
+  43   1               if (a>=5)
+  44   1      
+  45   1               b++;
+  46   1      
+  47   1               return b;
+  48   1      
+  49   1      }
+  50          
+  51          /*To figure out the absolute value*/
+  52          
+  53          uchar abss(char a)
+  54          
+  55          {
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 2   
+
+  56   1      
+  57   1               if (a<0)
+  58   1      
+  59   1               a=-a;
+  60   1      
+  61   1               return a;
+  62   1      
+  63   1      }
+  64          
+  65          /*The function can comparat the character.
+  66          
+  67          And remove the big one to the back.*/
+  68          
+  69          void max(uchar *a,uchar *b)
+  70          
+  71          {
+  72   1      
+  73   1         uchar t;
+  74   1      
+  75   1         if ((*a)>(*b))
+  76   1      
+  77   1         {
+  78   2      
+  79   2                         t=(*a);
+  80   2      
+  81   2                         (*a)=(*b);
+  82   2      
+  83   2                         (*b)=t;   
+  84   2      
+  85   2         }
+  86   1      
+  87   1      }
+  88          
+  89          /*The function is to figure out the max number and return it.*/
+  90          
+  91          uchar maxt(uchar a,uchar b,uchar c)
+  92          
+  93          {
+  94   1      
+  95   1               if (a<b)
+  96   1      
+  97   1               a=b;
+  98   1      
+  99   1               if (a<c)
+ 100   1      
+ 101   1               a=c;
+ 102   1      
+ 103   1               return a;
+ 104   1      
+ 105   1      }
+ 106          
+ 107          void clear(char le)
+ 108          
+ 109          {
+ 110   1      
+ 111   1               uchar i,j;
+ 112   1      
+ 113   1               for (j=0;j<8;j++)
+ 114   1      
+ 115   1               {
+ 116   2      
+ 117   2                         for (i=0;i<8;i++)
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 3   
+
+ 118   2      
+ 119   2                         display[j][i]=le;
+ 120   2      
+ 121   2               }
+ 122   1      
+ 123   1      }
+ 124          
+ 125          void trailler(uint speed)
+ 126          
+ 127          {
+ 128   1      
+ 129   1               char i,j;
+ 130   1      
+ 131   1               for (i=6;i>=-3;i--)
+ 132   1      
+ 133   1               {
+ 134   2      
+ 135   2                         if (i>=0)
+ 136   2      
+ 137   2                         {
+ 138   3      
+ 139   3                                  for (j=0;j<8;j++)
+ 140   3      
+ 141   3                                  display[j][i]=display[j][i+1];
+ 142   3      
+ 143   3                         }
+ 144   2      
+ 145   2                         if (i<4)
+ 146   2      
+ 147   2                         {
+ 148   3      
+ 149   3                                  for (j=0;j<8;j++)
+ 150   3      
+ 151   3                                  display[j][i+4]=0;
+ 152   3      
+ 153   3                         }
+ 154   2      
+ 155   2                         delay(speed);
+ 156   2      
+ 157   2               }
+ 158   1      
+ 159   1      }
+ 160          
+ 161          void point(uchar x,uchar y,uchar z,uchar le)
+ 162          
+ 163          {
+ 164   1      
+ 165   1               uchar ch1,ch0;
+ 166   1      
+ 167   1               ch1=1<<x;
+ 168   1      
+ 169   1               ch0=~ch1;
+ 170   1      
+ 171   1               if (le) 
+ 172   1      
+ 173   1               display[z][y]=display[z][y]|ch1;
+ 174   1      
+ 175   1               else 
+ 176   1      
+ 177   1               display[z][y]=display[z][y]&ch0;
+ 178   1      
+ 179   1      }
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 4   
+
+ 180          
+ 181          void type(uchar cha,uchar y)
+ 182          
+ 183          {        
+ 184   1      
+ 185   1               uchar xx;
+ 186   1      
+ 187   1               for (xx=0;xx<8;xx++)
+ 188   1      
+ 189   1               {
+ 190   2      
+ 191   2               display[xx][y]=table_cha[cha][xx];
+ 192   2      
+ 193   2               }
+ 194   1      
+ 195   1      }
+ 196          
+ 197          /*The first variable is the distance from the midpoint.
+ 198          
+ 199          The second is the layer.
+ 200          
+ 201          the third is the flash speed of the time between each two point.
+ 202          
+ 203          The forth is the enable io,it controls weather draw or claen.*/
+ 204          
+ 205          void cirp(char cpp,uchar dir,uchar le)
+ 206          
+ 207          {
+ 208   1      
+ 209   1               uchar a,b,c,cp;
+ 210   1      
+ 211   1               if ((cpp<128)&(cpp>=0))
+ 212   1      
+ 213   1               {
+ 214   2      
+ 215   2                         if (dir)
+ 216   2      
+ 217   2                         cp=127-cpp;
+ 218   2      
+ 219   2                         else 
+ 220   2      
+ 221   2                         cp=cpp; 
+ 222   2      
+ 223   2                         a=(dat[cp]>>5)&0x07;
+ 224   2      
+ 225   2                         b=(dat[cp]>>2)&0x07;
+ 226   2      
+ 227   2                         c=dat[cp]&0x03;
+ 228   2      
+ 229   2                         if (cpp>63)
+ 230   2      
+ 231   2                         c=7-c;
+ 232   2      
+ 233   2                         point (a,b,c,le);
+ 234   2      
+ 235   2               }
+ 236   1      
+ 237   1      }
+ 238          
+ 239          void line(uchar x1,uchar y1,uchar z1,uchar x2,uchar y2,uchar z2,uchar le)
+ 240          
+ 241          {
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 5   
+
+ 242   1      
+ 243   1               char t,a,b,c,a1,b1,c1,i;
+ 244   1      
+ 245   1               a1=x2-x1;
+ 246   1      
+ 247   1               b1=y2-y1;
+ 248   1      
+ 249   1               c1=z2-z1;
+ 250   1      
+ 251   1               t=maxt(abss(a1),abss(b1),abss(c1));
+ 252   1      
+ 253   1               a=x1*10;
+ 254   1      
+ 255   1               b=y1*10;
+ 256   1      
+ 257   1               c=z1*10;
+ 258   1      
+ 259   1               a1=a1*10/t;
+ 260   1      
+ 261   1               b1=b1*10/t;
+ 262   1      
+ 263   1               c1=c1*10/t;
+ 264   1      
+ 265   1               for (i=0;i<t;i++)
+ 266   1      
+ 267   1               {
+ 268   2      
+ 269   2                         point(abs(a),abs(b),abs(c),le);
+ 270   2      
+ 271   2                         a+=a1;
+ 272   2      
+ 273   2                         b+=b1;
+ 274   2      
+ 275   2                         c+=c1;
+ 276   2      
+ 277   2               }
+ 278   1      
+ 279   1               point(x2,y2,z2,le);
+ 280   1      
+ 281   1      }
+ 282          
+ 283          void box(uchar x1,uchar y1,uchar z1,uchar x2,uchar y2,uchar z2,uchar fill,uchar le)
+ 284          
+ 285          {
+ 286   1      
+ 287   1               uchar i,j,t=0;
+ 288   1      
+ 289   1               max(&x1,&x2);
+ 290   1      
+ 291   1               max(&y1,&y2);
+ 292   1      
+ 293   1               max(&z1,&z2);
+ 294   1      
+ 295   1               for (i=x1;i<=x2;i++)
+ 296   1      
+ 297   1                         t|=1<<i;
+ 298   1      
+ 299   1               if (!le)
+ 300   1      
+ 301   1                         t=~t;
+ 302   1      
+ 303   1               if (fill)
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 6   
+
+ 304   1      
+ 305   1               {
+ 306   2      
+ 307   2                         if (le)
+ 308   2      
+ 309   2                         {
+ 310   3      
+ 311   3                                  for (i=z1;i<=z2;i++)
+ 312   3      
+ 313   3                                  {
+ 314   4      
+ 315   4                                           for (j=y1;j<=y2;j++)
+ 316   4      
+ 317   4                                                     display[j][i]|=t;
+ 318   4      
+ 319   4                                  }
+ 320   3      
+ 321   3                         }
+ 322   2      
+ 323   2                         else
+ 324   2      
+ 325   2                         {
+ 326   3      
+ 327   3                                  for (i=z1;i<=z2;i++)
+ 328   3      
+ 329   3                                  {
+ 330   4      
+ 331   4                                           for (j=y1;j<=y2;j++)
+ 332   4      
+ 333   4                                                     display[j][i]&=t;
+ 334   4      
+ 335   4                                  }
+ 336   3      
+ 337   3                         }
+ 338   2      
+ 339   2               }
+ 340   1      
+ 341   1               else
+ 342   1      
+ 343   1               {
+ 344   2      
+ 345   2                         if (le)
+ 346   2      
+ 347   2                         {
+ 348   3      
+ 349   3                                  display[y1][z1]|=t;
+ 350   3      
+ 351   3                                  display[y2][z1]|=t;
+ 352   3      
+ 353   3                                  display[y1][z2]|=t;
+ 354   3      
+ 355   3                                  display[y2][z2]|=t;
+ 356   3      
+ 357   3                         }
+ 358   2      
+ 359   2                         else
+ 360   2      
+ 361   2                         {
+ 362   3      
+ 363   3                                 display[y1][z1]&=t;
+ 364   3      
+ 365   3                                  display[y2][z1]&=t;
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 7   
+
+ 366   3      
+ 367   3                                  display[y1][z2]&=t;
+ 368   3      
+ 369   3                                  display[y2][z2]&=t;
+ 370   3      
+ 371   3                         }
+ 372   2      
+ 373   2                         t=(0x01<<x1)|(0x01<<x2);
+ 374   2      
+ 375   2                         if (!le)
+ 376   2      
+ 377   2                                  t=~t;
+ 378   2      
+ 379   2                         if (le)
+ 380   2      
+ 381   2                         {
+ 382   3      
+ 383   3                                  for (j=z1;j<=z2;j+=(z2-z1))
+ 384   3      
+ 385   3                                  {
+ 386   4      
+ 387   4                                           for (i=y1;i<=y2;i++)
+ 388   4      
+ 389   4                                                     display[i][j]|=t;
+ 390   4      
+ 391   4                                  }
+ 392   3      
+ 393   3                                  for (j=y1;j<=y2;j+=(y2-y1))
+ 394   3      
+ 395   3                                  {
+ 396   4      
+ 397   4                                           for (i=z1;i<=z2;i++)
+ 398   4      
+ 399   4                                                     display[j][i]|=t;
+ 400   4      
+ 401   4                                  }
+ 402   3      
+ 403   3                         }
+ 404   2      
+ 405   2                         else
+ 406   2      
+ 407   2                         {
+ 408   3      
+ 409   3                                  for (j=z1;j<=z2;j+=(z2-z1))
+ 410   3      
+ 411   3                                  {
+ 412   4      
+ 413   4                                           for (i=y1;i<=y2;i++)
+ 414   4      
+ 415   4                                           {
+ 416   5      
+ 417   5                                           display[i][j]&=t;
+ 418   5      
+ 419   5                                           }
+ 420   4      
+ 421   4                                  }
+ 422   3      
+ 423   3                                  for (j=y1;j<=y2;j+=(y2-y1))
+ 424   3      
+ 425   3                                  {
+ 426   4      
+ 427   4                                           for (i=z1;i<=z2;i++)
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 8   
+
+ 428   4      
+ 429   4                                           {
+ 430   5      
+ 431   5                                           display[j][i]&=t;
+ 432   5      
+ 433   5                                           }
+ 434   4      
+ 435   4                                  }
+ 436   3      
+ 437   3                         }
+ 438   2      
+ 439   2               }
+ 440   1      
+ 441   1      }
+ 442          
+ 443          void box_apeak_xy(uchar x1,uchar y1,uchar z1,uchar x2,uchar y2,uchar z2,uchar fill,uchar le)
+ 444          
+ 445          {
+ 446   1      
+ 447   1               uchar i;
+ 448   1      
+ 449   1               max(&z1,&z2);
+ 450   1      
+ 451   1               if (fill)
+ 452   1      
+ 453   1               {
+ 454   2      
+ 455   2                         for (i=z1;i<=z2;i++)
+ 456   2      
+ 457   2                         {
+ 458   3      
+ 459   3                                  line (x1,y1,i,x2,y2,i,le);
+ 460   3      
+ 461   3                         } 
+ 462   2      
+ 463   2               } 
+ 464   1      
+ 465   1               else
+ 466   1      
+ 467   1               {
+ 468   2      
+ 469   2                         line (x1,y1,z1,x2,y2,z1,le);
+ 470   2      
+ 471   2                         line (x1,y1,z2,x2,y2,z2,le);
+ 472   2      
+ 473   2                         line (x2,y2,z1,x2,y2,z2,le);
+ 474   2      
+ 475   2                         line (x1,y1,z1,x1,y1,z2,le);
+ 476   2      
+ 477   2               }
+ 478   1      
+ 479   1      }
+ 480          
+ 481          void poke(uchar n,uchar x,uchar y)
+ 482          
+ 483          {
+ 484   1      
+ 485   1               uchar i;
+ 486   1      
+ 487   1               for (i=0;i<8;i++)
+ 488   1      
+ 489   1               {
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 9   
+
+ 490   2      
+ 491   2                point(x,y,i,judgebit(n,i));
+ 492   2      
+ 493   2               }
+ 494   1      
+ 495   1      }
+ 496          
+ 497          void boxtola(char i,uchar n)
+ 498          
+ 499          {
+ 500   1      
+ 501   1               if ((i>=0)&(i<8))
+ 502   1      
+ 503   1               {
+ 504   2      
+ 505   2                         poke(n,0,7-i);
+ 506   2      
+ 507   2               }
+ 508   1      
+ 509   1               if ((i>=8)&(i<16))
+ 510   1      
+ 511   1               {
+ 512   2      
+ 513   2                         poke(n,i-8,0);
+ 514   2      
+ 515   2               }
+ 516   1      
+ 517   1               if ((i>=16)&(i<24))
+ 518   1      
+ 519   1               {
+ 520   2      
+ 521   2                         poke(n,7,i-16);
+ 522   2      
+ 523   2               }
+ 524   1      
+ 525   1       
+ 526   1      
+ 527   1      }
+ 528          
+ 529          void rolldisplay(uint speed)
+ 530          
+ 531          {
+ 532   1      
+ 533   1               uchar j;
+ 534   1      
+ 535   1               char i,a;
+ 536   1      
+ 537   1               for (i=23;i>-40;i--)
+ 538   1      
+ 539   1               {
+ 540   2      
+ 541   2                         for (j=0;j<40;j++)
+ 542   2      
+ 543   2                         {
+ 544   3      
+ 545   3                                  a=i+j;
+ 546   3      
+ 547   3                                  if ((a>=0)&(a<24))
+ 548   3      
+ 549   3                                  boxtola(a,table_id[j]);
+ 550   3      
+ 551   3                         }
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 10  
+
+ 552   2      
+ 553   2                         delay(speed);
+ 554   2      
+ 555   2               }
+ 556   1      
+ 557   1      }
+ 558          
+ 559          void roll_apeak_yz(uchar n,uint speed)
+ 560          
+ 561          {
+ 562   1      
+ 563   1               uchar i;
+ 564   1      
+ 565   1               switch(n)
+ 566   1      
+ 567   1               {
+ 568   2      
+ 569   2                         case 1:
+ 570   2      
+ 571   2                                  for (i=0;i<7;i++)
+ 572   2      
+ 573   2                                  {
+ 574   3      
+ 575   3                                           display[i][7]=0;
+ 576   3      
+ 577   3                                           display[7][6-i]=255;
+ 578   3      
+ 579   3                                           delay(speed);
+ 580   3      
+ 581   3                                  };
+ 582   2      
+ 583   2                                  break;
+ 584   2      
+ 585   2                         case 2:
+ 586   2      
+ 587   2                                  for (i=0;i<7;i++)
+ 588   2      
+ 589   2                                  {
+ 590   3      
+ 591   3                                           display[7][7-i]=0;
+ 592   3      
+ 593   3                                           display[6-i][0]=255;
+ 594   3      
+ 595   3                                           delay(speed);
+ 596   3      
+ 597   3                                  };
+ 598   2      
+ 599   2                                  break;
+ 600   2      
+ 601   2                         case 3:
+ 602   2      
+ 603   2                                  for (i=0;i<7;i++)
+ 604   2      
+ 605   2                                  {
+ 606   3      
+ 607   3                                           display[7-i][0]=0;
+ 608   3      
+ 609   3                                           display[0][i+1]=255;
+ 610   3      
+ 611   3                                           delay(speed);
+ 612   3      
+ 613   3                                  };
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 11  
+
+ 614   2      
+ 615   2                                  break;
+ 616   2      
+ 617   2                         case 0:
+ 618   2      
+ 619   2                                  for (i=0;i<7;i++)
+ 620   2      
+ 621   2                                  {
+ 622   3      
+ 623   3                                           display[0][i]=0;
+ 624   3      
+ 625   3                                           display[i+1][7]=255;
+ 626   3      
+ 627   3                                           delay(speed);
+ 628   3      
+ 629   3                                  };
+ 630   2      
+ 631   2               }
+ 632   1      
+ 633   1      }
+ 634          
+ 635          void roll_apeak_xy(uchar n,uint speed)
+ 636          
+ 637          {
+ 638   1      
+ 639   1               uchar i;
+ 640   1      
+ 641   1               switch(n)
+ 642   1      
+ 643   1               {
+ 644   2      
+ 645   2                         case 1:
+ 646   2      
+ 647   2                                  for (i=0;i<7;i++)
+ 648   2      
+ 649   2                                  {
+ 650   3      
+ 651   3                                           line(0,i,0,0,i,7,0);
+ 652   3      
+ 653   3                                           line(i+1,7,0,i+1,7,7,1);
+ 654   3      
+ 655   3                                           delay(speed);
+ 656   3      
+ 657   3                                  };
+ 658   2      
+ 659   2                                  break;
+ 660   2      
+ 661   2                         case 2:
+ 662   2      
+ 663   2                                  for (i=0;i<7;i++)
+ 664   2      
+ 665   2                                  {
+ 666   3      
+ 667   3                                           line(i,7,0,i,7,7,0);
+ 668   3      
+ 669   3                                           line(7,6-i,0,7,6-i,7,1);
+ 670   3      
+ 671   3                                           delay(speed);
+ 672   3      
+ 673   3                                  };
+ 674   2      
+ 675   2                                  break;
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 12  
+
+ 676   2      
+ 677   2                         case 3:
+ 678   2      
+ 679   2                                  for (i=0;i<7;i++)
+ 680   2      
+ 681   2                                  {
+ 682   3      
+ 683   3                                           line(7,7-i,0,7,7-i,7,0);
+ 684   3      
+ 685   3                                           line(6-i,0,0,6-i,0,7,1);
+ 686   3      
+ 687   3                                           delay(speed);
+ 688   3      
+ 689   3                                  };
+ 690   2      
+ 691   2                                  break;
+ 692   2      
+ 693   2                         case 0:
+ 694   2      
+ 695   2                                  for (i=0;i<7;i++)
+ 696   2      
+ 697   2                                  {
+ 698   3      
+ 699   3                                           line(7-i,0,0,7-i,0,7,0);
+ 700   3      
+ 701   3                                           line(0,i+1,0,0,i+1,7,1);
+ 702   3      
+ 703   3                                           delay(speed);
+ 704   3      
+ 705   3                                  };
+ 706   2      
+ 707   2               }
+ 708   1      
+ 709   1      }
+ 710          
+ 711          void roll_3_xy(uchar n,uint speed)
+ 712          
+ 713          {
+ 714   1      
+ 715   1               uchar i;
+ 716   1      
+ 717   1               switch(n)
+ 718   1      
+ 719   1               {
+ 720   2      
+ 721   2                         case 1:
+ 722   2      
+ 723   2                                  for (i=0;i<8;i++)
+ 724   2      
+ 725   2                                  {
+ 726   3      
+ 727   3                                           box_apeak_xy (0,i,0,7,7-i,7,1,1);
+ 728   3      
+ 729   3                                           delay(speed);
+ 730   3      
+ 731   3                                           if (i<7)
+ 732   3      
+ 733   3                                           box_apeak_xy (3,3,0,0,i,7,1,0);
+ 734   3      
+ 735   3                                  };
+ 736   2      
+ 737   2                                  break;
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 13  
+
+ 738   2      
+ 739   2                         case 2:
+ 740   2      
+ 741   2                                  for (i=0;i<8;i++)
+ 742   2      
+ 743   2                                  {
+ 744   3      
+ 745   3                                            box_apeak_xy (7-i,0,0,i,7,7,1,1);
+ 746   3      
+ 747   3                                           delay(speed);
+ 748   3      
+ 749   3                                           if (i<7)
+ 750   3      
+ 751   3                                           box_apeak_xy (3,4,0,i,7,7,1,0);
+ 752   3      
+ 753   3                                  };
+ 754   2      
+ 755   2                                  break;
+ 756   2      
+ 757   2                         case 3:
+ 758   2      
+ 759   2                                  for (i=0;i<8;i++)
+ 760   2      
+ 761   2                                  {
+ 762   3      
+ 763   3                                           box_apeak_xy (0,i,0,7,7-i,7,1,1);
+ 764   3      
+ 765   3                                           delay(speed);
+ 766   3      
+ 767   3                                           if (i<7)
+ 768   3      
+ 769   3                                           box_apeak_xy (4,4,0,7,7-i,7,1,0);
+ 770   3      
+ 771   3                                  };
+ 772   2      
+ 773   2                                  break;
+ 774   2      
+ 775   2                         case 0:
+ 776   2      
+ 777   2                                  for (i=0;i<8;i++)
+ 778   2      
+ 779   2                                  {
+ 780   3      
+ 781   3                                           box_apeak_xy (7-i,0,0,i,7,7,1,1);
+ 782   3      
+ 783   3                                           delay(speed);
+ 784   3      
+ 785   3                                           if (i<7)
+ 786   3      
+ 787   3                                           box_apeak_xy (4,3,0,7-i,0,7,1,0);
+ 788   3      
+ 789   3                                  };
+ 790   2      
+ 791   2               }
+ 792   1      
+ 793   1      }
+ 794          
+ 795          void trans(uchar z,uint speed)
+ 796          
+ 797          {
+ 798   1      
+ 799   1               uchar i,j;
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 14  
+
+ 800   1      
+ 801   1               for (j=0;j<8;j++)
+ 802   1      
+ 803   1               {
+ 804   2      
+ 805   2                         for (i=0;i<8;i++)
+ 806   2      
+ 807   2                         {
+ 808   3      
+ 809   3                                  display[z][i]>>=1;
+ 810   3      
+ 811   3                         }
+ 812   2      
+ 813   2                         delay(speed);
+ 814   2      
+ 815   2               }
+ 816   1      
+ 817   1      }
+ 818          
+ 819          void tranoutchar(uchar c,uint speed)
+ 820          
+ 821          {
+ 822   1      
+ 823   1               uchar i,j,k,a,i2=0;
+ 824   1      
+ 825   1               for (i=0;i<8;i++)
+ 826   1      
+ 827   1               {
+ 828   2      
+ 829   2                         if (i<7)
+ 830   2      
+ 831   2                         box_apeak_xy (i+1,0,0,i+1,7,7,1,1);
+ 832   2      
+ 833   2                         box_apeak_xy (i2,0,0,i2,7,7,1,0);
+ 834   2      
+ 835   2                         a=0;
+ 836   2      
+ 837   2                         i2=i+1;
+ 838   2      
+ 839   2                         for (j=0;j<=i;j++)
+ 840   2      
+ 841   2                         {
+ 842   3      
+ 843   3                                  a=a|(1<<j);
+ 844   3      
+ 845   3                         }
+ 846   2      
+ 847   2                         for (k=0;k<8;k++)
+ 848   2      
+ 849   2                         {
+ 850   3      
+ 851   3                                  display[k][3]|=table_cha[c][k]&a;
+ 852   3      
+ 853   3                                  display[k][4]|=table_cha[c][k]&a;
+ 854   3      
+ 855   3                         }
+ 856   2      
+ 857   2                         delay(speed);
+ 858   2      
+ 859   2               }
+ 860   1      
+ 861   1      }
+C51 COMPILER V8.08   MATH                                                                  05/13/2018 16:40:33 PAGE 15  
+
+ 862          
+ 863          void transss()
+ 864          
+ 865          {
+ 866   1      
+ 867   1               uchar i,j;
+ 868   1      
+ 869   1               for (i=0;i<8;i++)
+ 870   1      
+ 871   1               {
+ 872   2      
+ 873   2                         for (j=0;j<8;j++)
+ 874   2      
+ 875   2                         display[i][j]<<=1;
+ 876   2      
+ 877   2               }
+ 878   1      
+ 879   1      }
+ 880          
+ 881           
+ 882          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   3333    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----      74
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

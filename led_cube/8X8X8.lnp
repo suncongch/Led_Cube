@@ -1,0 +1,7 @@
+"8X8X8.obj",
+"flash.obj",
+"math.obj",
+"delay.obj",
+"config.obj" 
+TO "8X8X8" 
+RAMSIZE(256) 

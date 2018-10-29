@@ -1,0 +1,12 @@
+void flash_1();
+void flash_2();
+void flash_3();
+void flash_4();
+void flash_5();
+void flash_6();
+void flash_7();
+void flash_8();
+void flash_9();
+void flash_10();
+void flash_11();
+void flash(int x);
